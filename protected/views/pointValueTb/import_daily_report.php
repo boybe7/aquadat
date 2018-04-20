@@ -87,7 +87,8 @@
                         $id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
                         $value = $worksheet->getCell($column.$row);
                         $value = explode("+", $value);
-                        PointValueTbController::addModel($id,$datetime_record,$value[0]); 
+                        if($value[0]!="-")
+                         PointValueTbController::addModel($id,$datetime_record,$value[0]); 
                         //echo $id.":".$value[0]."<br>";
                         //PointValueTbController::addModel($id,$datetime_record,$value); 
                         $ipoint++;

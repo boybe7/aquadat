@@ -275,55 +275,58 @@ class PointValueTbController extends Controller
         $point_type = $models[0]->point_type_id;
         $models = PointValueTb::model()->findAll(array('condition'=>'point_id="'.$id.'" AND datetime_record="'.$datetime_record.'"'));
 
-        if(empty($models))
-        {
-                             //insert data
-                             $model = new PointValueTb;
-                             $model->point_id = $id;
-                             $model->datetime_record = $datetime_record;
-                             $model->user_id = "import";
-                             $today = date("Y-m-d H:i:s");  
-                             $model->created_date = $today;
+		if($value!="")
+			if(empty($models))
+			{
+								//insert data
+								$model = new PointValueTb;
+								$model->point_id = $id;
+								$model->datetime_record = $datetime_record;
+								$model->user_id = "import";
+								$today = date("Y-m-d H:i:s");  
+								$model->created_date = $today;
 
-                             if($point_type=="POINT-TYPE-001")
-                             {
-                                $model->point_float_value = $value;
-                             } 
-                             else{
-                                $model->point_text_value = $value;
-                             }  
+								if($point_type=="POINT-TYPE-001")
+								{
+									$model->point_float_value = $value;
+								} 
+								else{
+									$model->point_text_value = $value;
+								} 
+								
+								
 
-                             if(!$model->save())  
-                             {
-                             	echo "<pre>";print_r($model); echo "</pre>";
-                             	print_r($model->getErrors());    
-                             }              
-                                
-                                
-        }
-        else
-        {
-                             //update]
-                             //print_r($models);   
-                             // $models[0]->user_id = "import";
-                             // $today = date("Y-m-d H:i:s");  
-                             // $models[0]->created_date = $today; 
+								if(!$model->save())  
+								{
+									echo "<pre>";print_r($model); echo "</pre>";
+									print_r($model->getErrors());    
+								}              
+									
+									
+			}
+			else
+			{
+								//update]
+								//print_r($models);   
+								// $models[0]->user_id = "import";
+								// $today = date("Y-m-d H:i:s");  
+								// $models[0]->created_date = $today; 
 
-                             // if($point_type=="POINT-TYPE-001")
-                             // {
-                             //    $models[0]->point_float_value = $value;
-                             // } 
-                             // else{
-                             //    $models[0]->point_text_value = $value;
-                             // }  
+								// if($point_type=="POINT-TYPE-001")
+								// {
+								//    $models[0]->point_float_value = $value;
+								// } 
+								// else{
+								//    $models[0]->point_text_value = $value;
+								// }  
 
-                             // if(!$models[0]->save())
-                             // {
-                             // 	echo "<pre>";print_r($models[0]); echo "</pre>";
-                             // 	print_r($models[0]->getErrors()); 
-                             // }
-                                   
-        }
+								// if(!$models[0]->save())
+								// {
+								// 	echo "<pre>";print_r($models[0]); echo "</pre>";
+								// 	print_r($models[0]->getErrors()); 
+								// }
+									
+			}
 
 	}
 }
