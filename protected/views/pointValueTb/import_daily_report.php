@@ -14,7 +14,7 @@
         $worksheet  = $objPHPExcel->setActiveSheetIndex(0);
 
         $row_shift = 33;
-        $shift_no = 0; 
+        $shift_no = 1; 
     $month_th = array("มกราคม" =>"01","กุมภาพันธ์" =>"02","มีนาคม" =>"03","เมษายน" =>"04","พฤษภาคม" =>"05","มิถุนายน" =>"06","กรกฎาคม" =>"07","สิงหาคม" =>"08","กันยายน" =>"09","ตุลาคม" =>"10","พฤศจิกายน" =>"11","ธันวาคม" =>"12");
 
 
@@ -27,21 +27,26 @@
         //--------datetime record---------------//
         $day   = $worksheet->getCell("X".$row)->getValue();
         $day   = $day < 10 ? "0".$day : $day;
-        $month = $month_th[$worksheet->getCell("Y".$row)->getValue()];
+        $month = $month_th[$worksheet->getCell("Y".$row)->getCalculatedValue()];
         if($shift_no==0)
         {
                 $year  = $worksheet->getCell("AE".$row)->getValue()-543;
                 $shift = $worksheet->getCell("AF".$row)->getValue();
                 $shift = substr($shift, 1, 11);
-                //echo $shift."<br>";
+                echo $shift."<br>";
                      
         }
         else{
-
+                $str  = $worksheet->getCell("AE".$row)->getValue();
+                $str = trim(str_replace("น.","",$str));
+                $year = substr($str, 0, 4);
+                $stop = strpos($str, ")");
+                $shift = substr($str, 6, $stop-6);
+                echo $shift."<br>";
         }
         
         $date_record  = $year."-".$month."-".$day;
-        //echo $datetime_record."<br>";
+        echo $date_record."<br>";
 
         //---------end datetime---------------//
 
@@ -49,6 +54,7 @@
        
            
         //-----------------Section 1. Jar Test------------------//
+        echo "section 1 <br>";
         $row = $row_shift*$shift_no+5;
         $nsample = 6;
         $nparam = 7;
@@ -85,6 +91,7 @@
         //----------------------------End section 1--------------------//
 
         //-----------------Section 2. Chemical Dosage------------------//
+        echo "section 2 <br>";
         $row = $row_shift*$shift_no+5;
         $column = 'N'; 
         for ($i=0; $i < $nparam; $i++) { 
@@ -175,25 +182,25 @@
         			$value = str_replace("(", "", $str[0]);
         			$id = "BK-000058";
         			$datetime_record = $date_record." ".$time;
-        			echo $datetime_record."]".$id.":".$value."<br>";
+        			//echo $datetime_record."]".$id.":".$value."<br>";
         			PointValueTbController::addModel($id,$datetime_record,$value);
 
         			$value = str_replace(")", "", $str[1]);
         			$id = "BK-000061";
         			$datetime_record = $date_record." ".$time;
-        			echo $datetime_record."]".$id.":".$value."<br>";
+        			//echo $datetime_record."]".$id.":".$value."<br>";
         			PointValueTbController::addModel($id,$datetime_record,$value);
 
         			$value = str_replace("(", "", $str[2]);
         			$id = "BK-000059";
         			$datetime_record = $date_record." ".$time;
-        			echo $datetime_record."]".$id.":".$value."<br>";
+        			//echo $datetime_record."]".$id.":".$value."<br>";
         			PointValueTbController::addModel($id,$datetime_record,$value);
 
         			$value = str_replace("(", "", $str[4]);
         			$id = "BK-000060";
         			$datetime_record = $date_record." ".$time;
-        			echo $datetime_record."]".$id.":".$value."<br>";
+        			//echo $datetime_record."]".$id.":".$value."<br>";
         			PointValueTbController::addModel($id,$datetime_record,$value);
         		}
         		//echo $column.$row.":".$value."<br>";
@@ -207,7 +214,7 @@
         //----------------------------End section 2--------------------//
         
         //-----------------Section 3. Chemicals Used ------------------//
-
+        echo "section 3 <br>";
         $row = $row_shift*$shift_no+5;
         $column = 'AA'; 
         $datetime_record = $date_record." ".$time_record;
@@ -223,6 +230,7 @@
         //----------------------------End section 3--------------------//
         
         //-----------------Section 4. Water Production------------------//
+        echo "section 4 <br>";
         $row = $row_shift*$shift_no+4;
         $nrow = 8;
         for ($i=0; $i < $nrow; $i++) { 
@@ -306,28 +314,30 @@
 
         
         //-----------------Section 5. Water Quality------------------//
-        
+        echo "section 5 <br>";
         switch ($shift) {
                 case '00:00-08:00':
                         $time1 = '00.00';
                         $time2 = '04.00';
-                       
+                        $time3 = '08.00';
                         break;
 
                 case '08:00-16:00':
                         $time1 = '08.00';
                         $time2 = '12.00';
+                        $time3 = '16.00';
                         break;
                         
                 case '16:00-24:00':
                         $time1 = '16.00';
                         $time2 = '20.00';
+                        $time3 = '24.00';
                         break;          
                 
                 default:
                         $time1 = '00.00';
-                        $time2 = '00.00';
-                       
+                        $time2 = '04.00';
+                        $time3 = '08.00';
                         break;
         }
 
@@ -344,7 +354,7 @@
         for ($i=0; $i < $ntime; $i++) { 
             
             $datetime_record = $date_record." ".$times[$i];
-            echo $datetime_record ."<br>";
+            //echo $datetime_record ."<br>";
             $ipoint = 86;
             for ($j=0; $j < $nparam; $j++) { 
                     $column = "B";
@@ -373,7 +383,7 @@
         $row = $row_shift*$shift_no+14;
         for ($i=0; $i < $ntime; $i++) { 
             $datetime_record = $date_record." ".$times[$i];
-            echo $datetime_record ."<br>";
+            //echo $datetime_record ."<br>";
             $ipoint = 149;
             for ($j=0; $j < $nparam; $j++) { 
                     $column = "S";
@@ -402,32 +412,42 @@
         $row = $row_shift*$shift_no+23;
 	    for ($i=0; $i < 2; $i++) { 
 	    	$id = $ipoint < 100 ? "BK-0000".$ipoint : "BK-000".$ipoint ;
-	    	$str = $worksheet->getCell("E".$row);
+                $str = $worksheet->getCell("E".$row);
+                echo "value=".$str."<br>";
 	        $str = str_replace("CMD", "", trim($str)) ;
 	        $str = str_replace(")", "", trim($str)) ;
-	        $start = strpos($str, "(");
-	        $value = substr($str, 0,$start);
-	        $time = substr($str, $start+1);
-	        //echo $time."<br>";
+                $start = strpos($str, "(");
+                if($start!="")
+                {
+                        $value = substr($str, 0,$start);                     
+                        $time = substr($str, $start+1);     
+                }
+                else{
+                        $time = $time1 ;
+                        $value = $str;
+                }
+
+	        echo $time."<br>";
 	        $datetime_record = $date_record." ".$time;
 	        if($value!="")
 	        {
 	        	PointValueTbController::addModel($id,$datetime_record,$value); 
 	        }
-	        //echo $id.":".$datetime_record.":".$value." | ";
+	        echo $id.":".$datetime_record.":".$value." | ";
 
 	        $str = $worksheet->getCell("I".$row);
 	        $str = str_replace("CMD", "", trim($str)) ;
 	        $str = str_replace(")", "", trim($str)) ;
 	        $start = strpos($str, "(");
 	        $value = substr($str, 0,$start);
-	        $time = substr($str, $start+1);
-			$datetime_record = $date_record." ".$time;
+                $time = substr($str, $start+1);
+                $time = $time=="" ? $time2 : $time ;
+		$datetime_record = $date_record." ".$time;
 	        if($value!="")
 	        {
 	        	PointValueTbController::addModel($id,$datetime_record,$value); 
 	        }
-	        //echo $id.":".$datetime_record.":".$value." | ";
+	        echo $id.":".$datetime_record.":".$value." | ";
 
 
 	        $str = $worksheet->getCell("M".$row);
@@ -435,13 +455,14 @@
 	        $str = str_replace(")", "", trim($str)) ;
 	        $start = strpos($str, "(");
 	        $value = substr($str, 0,$start);
-	        $time = substr($str, $start+1);
-			$datetime_record = $date_record." ".$time;
+                $time = substr($str, $start+1);
+                $time = $time=="" ? $time3 : $time ;
+		$datetime_record = $date_record." ".$time;
 	        if($value!="")
 	        {
 	        	PointValueTbController::addModel($id,$datetime_record,$value); 
 	        }
-	        //echo $id.":".$datetime_record.":".$value." | ";
+	        echo $id.":".$datetime_record.":".$value." | ";
 	        
 	        $row++;
 	        $ipoint++;
@@ -450,6 +471,7 @@
         //----------------------------End section 5--------------------//
          
         //-----------------Section 6. Free CL2 in TP------------------//
+        echo "<br>section 6<br>";
         switch ($shift) {
         	case '00:00-08:00':
         		$time = array('00.00','02.00','04.00','06.00');
@@ -673,8 +695,9 @@
 	        for ($j=0; $j < 4; $j++) { 
 	        	$id = "BK-000".$ipoint ;
 	        	//echo $column.$row."|";
-	        	$value = $worksheet->getCell($column.$row)->getCalculatedValue();
-	        	$value = number_format($value,2);	        	
+                        $value = $worksheet->getCell($column.$row)->getCalculatedValue();
+                        if($value!="")
+	        	 $value = number_format($value,2);	        	
 		        PointValueTbController::addModel($id,$datetime_record,$value);
 		        //echo $id.":".$value." | ";
 		        $column++;
