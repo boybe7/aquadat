@@ -221,7 +221,8 @@ $this->widget('bootstrap.widgets.TbGridView',array(
 				'htmlOptions'=>array('style'=>'text-align:center;')
 	  	),
 		'point_value'=>array(
-			    'name' => 'point_float_value',
+                'name' => 'point_float_value',
+                'value' => array($model,'getValue'),
 			    //'filter'=>CHtml::activeTextField($model, 'point_value',array("placeholder"=>"ค้นหาตาม".$model->getAttributeLabel("point_value"))),
 				'headerHtmlOptions' => array('style' => 'width:10%;text-align:center;background-color: #f5f5f5'),  	            	  	
 				'htmlOptions'=>array('style'=>'text-align:right;padding-right:10px')

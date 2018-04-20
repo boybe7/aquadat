@@ -6,7 +6,8 @@
 	$objReader = PHPExcel_IOFactory::createReader('Excel5');
 
 
-	$filename = "bk_template_import.xls";
+        $filename = "bk_template_import.xls";
+        $filename = "fpb_lab_01March61.xls";
         $objPHPExcel = $objReader->load("import/".$filename);
         date_default_timezone_set("Asia/Bangkok");
 
@@ -27,9 +28,17 @@
         $day   = $worksheet->getCell("X".$row)->getValue();
         $day   = $day < 10 ? "0".$day : $day;
         $month = $month_th[$worksheet->getCell("Y".$row)->getValue()];
-        $year  = $worksheet->getCell("AE".$row)->getValue()-543;
-        $shift = $worksheet->getCell("AG".$row)->getValue();
-        $shift = substr($shift, 1, 11);
+        if($shift_no==0)
+        {
+                $year  = $worksheet->getCell("AE".$row)->getValue()-543;
+                $shift = $worksheet->getCell("AF".$row)->getValue();
+                $shift = substr($shift, 1, 11);
+                //echo $shift."<br>";
+                     
+        }
+        else{
+
+        }
         
         $date_record  = $year."-".$month."-".$day;
         //echo $datetime_record."<br>";
@@ -295,13 +304,14 @@
 
         //----------------------------End section 4--------------------//
 
-        /*
+        
         //-----------------Section 5. Water Quality------------------//
         
         switch ($shift) {
                 case '00:00-08:00':
                         $time1 = '00.00';
                         $time2 = '04.00';
+                       
                         break;
 
                 case '08:00-16:00':
@@ -317,6 +327,7 @@
                 default:
                         $time1 = '00.00';
                         $time2 = '00.00';
+                       
                         break;
         }
 
@@ -437,7 +448,7 @@
 	    }
 	        
         //----------------------------End section 5--------------------//
-
+         
         //-----------------Section 6. Free CL2 in TP------------------//
         switch ($shift) {
         	case '00:00-08:00':
@@ -691,6 +702,6 @@
         }
 
         //----------------------------End Remark-----------------------//
-    */
+    
     //}
 ?>

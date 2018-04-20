@@ -181,5 +181,16 @@ class PointValueTb extends CActiveRecord
  
 
         return $name;
+	}
+	
+	public function getValue($m)
+    {
+		
+        $models = PointsMainTb::model()->findAll(array('condition'=>'point_id="'.$m->point_id.'"'));
+        //get value type
+		$point_type = $models[0]->point_type_id;
+	
+		$value = $point_type=="POINT-TYPE-001" ? $m->point_float_value : $m->point_text_value; 
+        return $value;
     }
 }
