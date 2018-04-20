@@ -25,7 +25,7 @@
 
         
         //--------datetime record---------------//
-        $day   = $worksheet->getCell("X".$row)->getValue();
+        $day   = $worksheet->getCell("X".$row)->getCalculatedValue();
         $day   = $day < 10 ? "0".$day : $day;
         $month = $month_th[$worksheet->getCell("Y".$row)->getCalculatedValue()];
         if($shift_no==0)
@@ -218,11 +218,12 @@
         $row = $row_shift*$shift_no+5;
         $column = 'AA'; 
         $datetime_record = $date_record." ".$time_record;
+        $ipoint = 66;
         for ($i=0; $i < $nparam; $i++) { 
                         $id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
                         $value = $worksheet->getCell($column.$row);
                         PointValueTbController::addModel($id,$datetime_record,$value); 
-                        //echo $id.":".$value."<br>";
+                        echo $id.":".$value."<br>";
                         $ipoint++;
                         $row++;
         }
@@ -233,6 +234,7 @@
         echo "section 4 <br>";
         $row = $row_shift*$shift_no+4;
         $nrow = 8;
+        $ipoint = 73;
         for ($i=0; $i < $nrow; $i++) { 
                 //echo $i."---<br>";
                 if($i==0)

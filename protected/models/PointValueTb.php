@@ -80,6 +80,19 @@ class PointValueTb extends CActiveRecord
 		);
 	}
 
+	function behaviors() {
+	    return array(
+	        'relatedsearch'=>array(
+	             'class'=>'RelatedSearchBehavior',
+	             'relations'=>array(
+	                  'section_id'=>'point_main.section_id'
+
+	             ),
+	         ),
+	    );
+	}
+
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 *
@@ -127,15 +140,24 @@ class PointValueTb extends CActiveRecord
 			
 
 		//$criteria->compare( 'point_main.category_id', $this->category_id, true );
-		//$criteria->compare( 'point_main.section_id', $this->section_id, true );
+		//$criteria->compare( 'point_main.section_id', 'BK-SECTION-003', true );
 
+		// return new CActiveDataProvider($this, array(
+		// 	'criteria'=>$criteria,
+		// 	'sort' => array(
+		//         'defaultOrder' => 'id DESC',
+		//     ),
+		// ));
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-			'sort' => array(
-		        'defaultOrder' => 'id DESC',
-		    ),
-		));
+		
+		return $this->relatedSearch(
+	            $criteria,
+	            array(
+	                    'pagination'=>array('pageSize'=>10),
+	            	
+	            )
+	
+	    );
 	}
 
 	/**

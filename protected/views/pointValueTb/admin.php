@@ -52,7 +52,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                                );
                 } 
                 $typelist = CHtml::listData($data,'value','text');
-                echo CHtml::dropDownList('section', '', $typelist, array('class'=>'span12','empty' => '--เลือก section--',
+                echo CHtml::dropDownList('section_id', '', $typelist, array('class'=>'span12','empty' => '--เลือก section--',
                                             'ajax' => array(
                                                 'type'=>'POST', //request type
                                                 'data'=>array('section'=>'js:this.value'),
