@@ -5,7 +5,7 @@
         $objPHPExcel = $objReader->load("report/bk_template.xls");
         date_default_timezone_set("Asia/Bangkok");
 
-        $shift = "08.00-16.00";
+        
 
         $row = 2; //row start
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$row, $year);
@@ -15,6 +15,7 @@
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('AF'.$row, "__( ".$shift." น.)__");
 
         //-----------------Section 1. Jar Test------------------//
+        echo "---------section 1-----------<br>";
         $row_sec1 = 5;
         $row = 5;
         $nsample = 6;
@@ -30,18 +31,20 @@
         		
         		$objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
         		$column++;
-                //echo $id.":".$value."<br>";
+                echo $id.":".$value."|";
         		$ipoint++;
         	}
         	$row++;
+            echo "<br>";
         }
         //Recommended dosage
+        echo '-----Recommended dosage------<br>';
         $row = $row_sec1;
         for ($i=0; $i < $nparam; $i++) { 
         	$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
         	$value = empty($models[$id]["value"]) ? "-" : $models[$id]["value"];
         	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("J".$row, $value);
-        	//echo $id.":".$value."<br>";
+        	echo $id.":".$value."<br>";
         	$ipoint++;
         	$row++;
         }
@@ -50,6 +53,7 @@
         //----------------------------End section 1--------------------//
 
         //-----------------Section 2. Chemical Dosage------------------//
+        echo "//-----------------Section 2. Chemical Dosage------------------//<br>";
         $row = $row_sec1;
         for ($i=0; $i < $nparam; $i++) { 
 
@@ -105,13 +109,14 @@
         //----------------------------End section 2--------------------//
 
         //-----------------Section 3. Chemicals Used ------------------//
-
+        echo "//-----------------Section 3. Chemicals Used ------------------//<br>";
         $row = $row_sec1;
         for ($i=0; $i < $nparam; $i++) { 
         		$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
 	        	$value = empty($models[$id]["value"]) ? "0" : $models[$id]["value"];
 	        	$ipoint++;
-	        	
+                $value = number_format($value,0);
+	        	echo $value."<br>";
 	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("AA".$row, $value);
 	        	$row++;
         }
@@ -119,6 +124,7 @@
         //----------------------------End section 3--------------------//
 
         //-----------------Section 4. Water Production------------------//
+        echo "//-----------------Section 4. Water Production------------------//<br>";
         $row = 4;
         $nrow = 8;
         for ($i=0; $i < $nrow; $i++) { 
@@ -130,13 +136,13 @@
 	        	$value = empty($models[$id]["value"]) ? "0" : number_format(intval($models[$id]["value"]),0);
 	        	$ipoint++;
 	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("AH".$row, $value);
-
+                echo $value."|";
 
 	        	$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
 	        	$value = empty($models[$id]["value"]) ? "0" : number_format(intval($models[$id]["value"]),0);
 	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("AN".$row, $value);
 	        	$ipoint++;
-
+                echo $value."|";
 	        	//echo $i.":".$id."=".$value."<br>";
 
         	}
@@ -147,12 +153,13 @@
 	        	$value = empty($models[$id]["value"]) ? "0" : number_format(intval($models[$id]["value"]),0);
 	        	$ipoint++;
 	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("AG".$row, $value);
-
+                echo $value."|";
 
 	        	$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
 	        	$value = empty($models[$id]["value"]) ? "0" : number_format(intval($models[$id]["value"]),0);
 	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("AK".$row, $value);
 	        	$ipoint++;
+                echo $value."|";
 
 	        	$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
 	        	$value = empty($models[$id]["value"]) ? "0" : number_format(intval($models[$id]["value"]),0);
@@ -160,7 +167,7 @@
 	        	$ipoint++;
 
 	        	//echo $i.":".$id."=".$value."<br>";
-
+                echo $value."|";
         	}
         	else{
 
@@ -169,17 +176,17 @@
 	        	$ipoint++;
 	        	
 	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("AJ".$row, $value);
-	        	//echo $i.":".$id."=".$value."<br>";
+	        	echo $value."|";
         	}
-
+            echo "<br>";;
         	$row++;	
         }
 
         //----------------------------End section 4--------------------//
 
         //-----------------Section 5. Water Quality------------------//
+        echo "//-----------------Section 5. Water Quality------------------//<br>";
         
-        $shift = '08.00-16.00';
         switch ($shift) {
         	case '00.00-08.00':
         		$time1 = '00.00';
@@ -202,11 +209,13 @@
         		break;
         }
 
-        $date_begin = "2018-02-14 ".$time1;
-        $date_end = "2018-02-14 ".$time2;
+        $date_begin = $date_record." ".$time1;
+        $date_end = $date_record." ".$time2;
         $section_id = "BK-SECTION-005";
+        //echo $date_end;
         $model_sec5 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="'.$section_id.'" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
 
+        //print_r($model_sec5);
         $model_array = array();
         $id = 1;
         foreach ($model_sec5 as $model) {
@@ -218,9 +227,9 @@
             $id++;  
         }
 
-        echo "<pre>";
-        print_r($model_array);
-        echo "</pre>";
+        //echo "<pre>";
+        //print_r($model_array);
+        //echo "</pre>";
 
         //echo "===".$model_array['BK-000103'][8];
 
@@ -256,12 +265,12 @@
                             //if(empty($model_array[$id][$time_int]))
                             ///if($id=='BK-000103')    
                             //echo $ipoint.":".$column.$row."=".$value."| ";
-
+                            echo $value."|";
                             $ipoint++;
                         }        
                        $column++;     
                     }      
-                //echo "row:".$row."<br>";    
+                echo "row:".$row."<br>";    
                 $row++;    
             }
             $row++; //skip header section time2
@@ -287,13 +296,13 @@
                             //if(empty($model_array[$id][$time_int]))
                             ///if($id=='BK-000103')    
                             //echo $ipoint.":".$column.$row."=".$value."| ";
-
+                            echo $value."|";
 
                             $ipoint++;
                         }        
                        $column++;     
                     }      
-                //echo "row:".$row."<br>";    
+                echo "row:".$row."<br>";    
                 $row++;    
             }
             $row++; //skip header section time2

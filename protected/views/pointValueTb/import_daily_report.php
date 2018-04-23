@@ -20,7 +20,7 @@
 
     for ($shift_no=0; $shift_no < 3 ; $shift_no++) { 
     
-
+        echo "======================================================<br><br>";
         $row = ($row_shift*$shift_no+2);
 
         
@@ -39,12 +39,12 @@
         else{
                 $str  = $worksheet->getCell("AE".$row)->getValue();
                 $str = trim(str_replace("น.","",$str));
-                $year = substr($str, 0, 4);
+                $year = substr($str, 0, 4)-543;
                 $stop = strpos($str, ")");
                 $shift = substr($str, 6, $stop-6);
                 echo $shift."<br>";
         }
-        
+        $shift = trim($shift);
         $date_record  = $year."-".$month."-".$day;
         echo $date_record."<br>";
 
@@ -317,6 +317,7 @@
         
         //-----------------Section 5. Water Quality------------------//
         echo "section 5 <br>";
+        //$shift = trim($shift);
         switch ($shift) {
                 case '00:00-08:00':
                         $time1 = '00.00';
@@ -344,7 +345,7 @@
         }
 
       
-        //echo $time1;
+        //echo "shift = ".$shift;
         $nparam = 4;
         $ntime = 2;
         $nstation = 17;
@@ -356,7 +357,7 @@
         for ($i=0; $i < $ntime; $i++) { 
             
             $datetime_record = $date_record." ".$times[$i];
-            //echo $datetime_record ."<br>";
+            echo $datetime_record ."<br>";
             $ipoint = 86;
             for ($j=0; $j < $nparam; $j++) { 
                     $column = "B";

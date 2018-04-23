@@ -186,9 +186,11 @@ class PointValueTbController extends Controller
 		$month = 'กุมภาพันธ์';
 		$year = 2561;
 
-		$date_begin = "2018-02-23 08:00:00";
-		$date_end = "2018-02-23 15:59:59";
+		$date_begin = "2018-03-01 08:00:00";
+		$date_end = "2018-03-01 15:59:59";
+		$shift = "08.00-16.00";
 
+		$date_record = "2018-03-01";
 
 		$models = PointValueTb::model()->findAll(array('order'=>'point_id ASC','condition'=>'datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
 
@@ -196,14 +198,26 @@ class PointValueTbController extends Controller
 
 		$model_array = array();
 		foreach ($models as $model) {
-			$model_array[$model->point_id]["value"] = $model->point_float_value; 
+
+			$models = PointsMainTb::model()->findAll(array('condition'=>'point_id="'.$model->point_id.'"'));
+        	//get value type
+        	$point_type = $models[0]->point_type_id;
+
+        	if($point_type=="POINT-TYPE-001")
+			{
+				$model_array[$model->point_id]["value"] = $model->point_float_value;
+			} 
+			else{
+				$model_array[$model->point_id]["value"] = $model->point_text_value;
+			} 
+
 			$model_array[$model->point_id]["datetime_record"] = $model->datetime_record; 
 		}
 
 		
 
 		$this->render('daily_report',array(
-		 	'models'=>$model_array,'day'=>$day,'month'=>$month,'year'=>$year
+		 	'models'=>$model_array,'date_record'=>$date_record,'day'=>$day,'month'=>$month,'year'=>$year,'shift'=>$shift
 		 ));
 
 		
