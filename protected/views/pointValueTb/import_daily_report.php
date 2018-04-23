@@ -507,13 +507,13 @@
                 $id = "BK-000".$ipoint ;  
                 $value = $worksheet->getCell($column.$row);  
                 PointValueTbController::addModel($id,$datetime_record,$value);
-                //echo $id.":".$value." | ";                 
+                echo $id.":".$value." | ";                 
                 $column++;   
                 $ipoint++;
             
                 
             }
-            //echo "<br>";
+            echo "<br>";
             $row++;            
         }
         //----------------------------End section 6--------------------//

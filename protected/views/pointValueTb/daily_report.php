@@ -315,6 +315,7 @@
         //----------------------------End section 5--------------------//
 
         //-----------------Section 6. Free CL2 in TP------------------//
+        echo "//-----------------Section 6. Free CL2 in TP------------------//<br>";
         switch ($shift) {
         	case '00.00-08.00':
         		$time1 = '00.00';
@@ -339,8 +340,8 @@
 
         $ntime = 4;
         $nstation = 11;
-        $date_begin = "2018-02-14 ".$time1;
-        $date_end = "2018-02-14 ".$time2;
+        $date_begin = $date_record." ".$time1;
+        $date_end = $date_record." ".$time2;
 
         //SELECT * FROM `point_value_tb` pv LEFT JOIN points_main_tb pm ON pv.point_id=pm.point_id WHERE section_id="BK-SECTION-007" AND datetime_record BETWEEN "2018-02-05 08:00:00" AND "2018-02-05 15:00:00" ORDER BY pv.point_id,datetime_record
         $model_sec6 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="BK-SECTION-006" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
@@ -362,7 +363,7 @@
         for ($i=0; $i < $ntime  ; $i++) {     
             
             $column = 'V';    
-            $ipoint = 211; //start point_id
+            $ipoint = 206; //start point_id
   
             for ($j=0; $j < $nstation; $j++) { 
                 $id = "BK-000".$ipoint ;    
@@ -374,11 +375,12 @@
                     $column++;    
                 }
                
-                $value = empty($model_array[$id][$time_int]) ? "-" : $model_array[$id][$time_int];
+                $value = $model_array[$id][$time_int]!=0 && empty($model_array[$id][$time_int])  ? "-" : $model_array[$id][$time_int];
+                //$value =  $model_array[$id][$time_int];
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
                 //if(empty($model_array[$id][$time_int]))
                 //   echo $id.":".$column.$row."=".$value."<br>";
-
+                echo $value." | ";
                  
                 $column++;   
                 $ipoint++;
@@ -389,7 +391,7 @@
             $time_int += 2 ;
             $row++;
 
-            
+            echo "<br>";
             
         }
 
@@ -398,7 +400,8 @@
         //----------------------------End section 6--------------------//
 
         //-----------------Section 7. Free CL2 at Pump------------------//
-        $shift = '08.00-16.00';
+        echo "//-----------------Section 7. Free CL2 at Pump------------------//<br>";
+        //$shift = '08.00-16.00';
         switch ($shift) {
         	case '00.00-08.00':
         		$time1 = '00.00';
@@ -423,8 +426,8 @@
 
         $ntime = 8;
         $nstation = 9;
-        $date_begin = "2018-02-23 ".$time1;
-        $date_end = "2018-02-23 ".$time2;
+        $date_begin = $date_record." ".$time1;
+        $date_end = $date_record." ".$time2;
 
         //SELECT * FROM `point_value_tb` pv LEFT JOIN points_main_tb pm ON pv.point_id=pm.point_id WHERE section_id="BK-SECTION-007" AND datetime_record BETWEEN "2018-02-05 08:00:00" AND "2018-02-05 15:00:00" ORDER BY pv.point_id,datetime_record
         $model_sec7 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="BK-SECTION-007" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
@@ -469,11 +472,11 @@
                
                 //if(empty($model_array[$id][$time_int]))
                 //echo $id.":".$column.$row."=".$value."<br>";
-
+                echo $value."<br>";
                  $row++;
                 $ipoint++;
         	}
-
+            echo "----<br>";
             $time_int++;
             $column++;
         }
@@ -482,6 +485,18 @@
 
         //----------------------------End section 7--------------------//
 
+        //-----------------Section 8. Recycle Water--------------------//
+        echo "//-----------------Section 8. Recycle Water--------------------//<br>";
+
+        //----------------------------End section 8--------------------//
+
+        //-----------------Section 9. Non-Conform --------------------//
+        echo "//-----------------Section 9. Non-Conform --------------------//<br>";
+        //----------------------------End section 9--------------------//
+
+        //-----------------Section 10. Additional Data--------------------//
+        echo "//-----------------Section 10. Additional Data--------------------//<br>";
+        //----------------------------End section 10--------------------//
 
         $fixbug = new PHPExcel_Style();
 		$fixbug->applyFromArray(
