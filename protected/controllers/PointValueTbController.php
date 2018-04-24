@@ -217,7 +217,7 @@ class PointValueTbController extends Controller
 		
 
 		$this->render('daily_report',array(
-		 	'models'=>$model_array,'date_record'=>$date_record,'day'=>$day,'month'=>$month,'year'=>$year,'shift'=>$shift
+		 	'models'=>$model_array,'date_begin'=>$date_begin,'date_end'=>$date_end,'date_record'=>$date_record,'day'=>$day,'month'=>$month,'year'=>$year,'shift'=>$shift
 		 ));
 
 		

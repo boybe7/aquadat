@@ -56,61 +56,113 @@
         echo "//-----------------Section 2. Chemical Dosage------------------//<br>";
 
         //SELECT * FROM point_value_tb WHERE datetime_record=(SELECT MAX(datetime_record) FROM `point_value_tb` WHERE datetime_record < "2018-03-01" AND point_id IN ('BK-000058','BK-000059','BK-000060','BK-000061'))
-        $datetime_record = "2018-03-01";
-        $models = PointValueTb::model()->findAll(array('condition'=>'datetime_record=(SELECT MAX(datetime_record) FROM point_value_tb WHERE point_id IN ("BK-000058","BK-000059","BK-000060","BK-000061") AND datetime_record < "'.$datetime_record.'")'));
-        echo "<pre>";
-        print_r($models);
-        echo "</pre>";
+        //$datetime_record = "2018-03-01";
+        $models2 = PointValueTb::model()->findAll(array('condition'=>'datetime_record=(SELECT MAX(datetime_record) FROM point_value_tb WHERE point_id IN ("BK-000058","BK-000059","BK-000060","BK-000061") AND datetime_record < "'.$date_record.'")'));
+
+        $last_postCl2 = "(".$models2[0]['point_float_value']."+".$models2[3]['point_float_value'].")+".
+                        "(".$models2[1]['point_float_value']."+".$models2[3]['point_float_value'].")+".
+                        "(".$models2[2]['point_float_value']."+".$models2[3]['point_float_value'].")"
+        ;
+        //echo $last_postCl2;
+        //$models = PointValueTb::model()->findAll(array('condition'=>'point_id IN ("BK-000058","BK-000059","BK-000060","BK-000061") AND datetime_record BETWEEN "2018-03-01 08.00" AND "2018-03-01 16.00"'));
+        //foreach ($models as $key => $m) {
+          //  echo $m->datetime_record." : ".$m->point_id." = ".$m->point_float_value."<br>";
+        //}
+        $ipoint = 50;
+
         $row = $row_sec1;
         for ($i=0; $i < $nparam; $i++) { 
 
         	if($i!=4)
         	{
         		//2 Lines
+
         		$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
-	        	$value1 = empty($models[$id]["value"]) ? "0" : $models[$id]["value"];
-	        	$ipoint++;
+                $models2 = PointValueTb::model()->findAll(array('condition'=>'point_id="'.$id.'" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"'));
+	        	$value1 = empty($models2[0]["point_float_value"]) ? "" : $models2[0]["point_float_value"];
+	        	//echo $ipoint.":".$value1."<br>";
+                $ipoint++;
 
 
 	        	$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
-	        	$value2 = empty($models[$id]["value"]) ? "0" : $models[$id]["value"];
+                $models2 = PointValueTb::model()->findAll(array('condition'=>'point_id="'.$id.'" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"'));
+                $value2 = empty($models2[0]["point_float_value"]) ? "" : $models2[0]["point_float_value"];
+                //echo $ipoint.":".$value2."<br>";
 
-	        	$value  = ($value1==0 && $value2==0) ? "-" : $value1."+".$value2;
-
+                if($value1=="" && $value2=="")
+                    $value = "-";
+                elseif($value1!="" && $value2=="")
+                    $value = $value1;
+                elseif($value1=="" && $value2!="")
+                    $value = $value2;
+                else
+	        	     $value  = $value1."+".$value2;
+                echo $value;
 	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("N".$row, $value);
 	        	$ipoint++;
 
         	}
         	else{
+                $ipoint = 62;
+                $models2 = PointValueTb::model()->findAll(array('select'=>'datetime_record',
+'condition'=>'point_id IN ("BK-000058","BK-000059","BK-000060","BK-000061") AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"','group'=>'datetime_record',
+    'distinct'=>true,
+));
+                $value = $last_postCl2;
+                foreach ($models2 as $key => $m) {
+                    //echo $m["datetime_record"]."<br>";
+                    $models3 = PointValueTb::model()->findAll(array(
+'condition'=>'point_id IN ("BK-000058","BK-000059","BK-000060","BK-000061") AND datetime_record ="'.$m["datetime_record"].'"'
+));
+                    $str =  explode(" ", $m["datetime_record"]);
+                    $str = explode(":",$str[1]);
+                    $time = $str[0].".".$str[1];
+                    //echo $time;
+                    //echo $models3[0]["point_id"].":".$models3[0]["point_float_value"]."<br>";
+                    //3 Lines with TPS    
+                    $value1 = $models3[0]["point_float_value"];
+                    $value2 = $models3[1]["point_float_value"];
+                    $value3 = $models3[2]["point_float_value"];
+                    $tps = $models3[3]["point_float_value"];    
+
+                    $value1 = "(".$value1."+".$tps.")";
+                    $value2 = "(".$value2."+".$tps.")";
+                    $value3 = "(".$value3."+".$tps.")";
+                    $valueAll = $value1."+".$value2."+".$value3."(".$time.")";
+
+                    $value = $value."->".$valueAll;
+                    
+                }
 
         		//3 Lines with TPS
-        		$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
-	        	$value1 = empty($models[$id]["value"]) ? "0" : $models[$id]["value"];
-	        	$ipoint++;
+        		// $id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
+	        	// $value1 = empty($models[$id]["value"]) ? "" : $models[$id]["value"];
+	        	// $ipoint++;
 
-	        	$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
-	        	$value2 = empty($models[$id]["value"]) ? "0" : $models[$id]["value"];
-	        	$ipoint++;
+	        	// $id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
+	        	// $value2 = empty($models[$id]["value"]) ? "" : $models[$id]["value"];
+	        	// $ipoint++;
 
 
-	        	$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
-	        	$value3 = empty($models[$id]["value"]) ? "0" : $models[$id]["value"];
-	        	$ipoint++;
+	        	// $id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
+	        	// $value3 = empty($models[$id]["value"]) ? "" : $models[$id]["value"];
+	        	// $ipoint++;
 
-	        	//TPS
-	        	$id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
-	        	$tps = empty($models[$id]["value"]) ? "0" : $models[$id]["value"];
-	        	$ipoint++;
+	        	// //TPS
+	        	// $id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
+	        	// $tps = empty($models[$id]["value"]) ? "" : $models[$id]["value"];
+	        	// $ipoint++;
 
-	        	$value1 = "(".$value1."+".$tps.")";
-	        	$value2 = "(".$value2."+".$tps.")";
-	        	$value3 = "(".$value3."+".$tps.")";
-
-	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("N".$row, $value1.">".$value2.">".$value3);
+	        	// $value1 = "(".$value1."+".$tps.")";
+	        	// $value2 = "(".$value2."+".$tps.")";
+	        	// $value3 = "(".$value3."+".$tps.")";
+          //       $value = $value1."+".$value2."+".$value3."(".$models[$id]["datetime_record"].")";
+                 echo $value;
+	        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("N".$row, $value);
 	        	
 
         	}
-        	
+        	echo "<br>";
         	$row++;
         }
         //----------------------------End section 2--------------------//

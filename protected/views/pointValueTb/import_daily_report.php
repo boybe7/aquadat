@@ -105,14 +105,14 @@
                         $value = explode("+", $value);
                         if($value[0]!="-")
                          PointValueTbController::addModel($id,$datetime_record,$value[0]); 
-                        //echo $id.":".$value[0]."<br>";
+                        echo $id.":".$value[0]."<br>";
                         //PointValueTbController::addModel($id,$datetime_record,$value); 
                         $ipoint++;
 
                         $id = $ipoint < 10 ? "BK-00000".$ipoint : "BK-0000".$ipoint ;
                         $value = empty($value[1]) ? "" : $value[1] ;
                         PointValueTbController::addModel($id,$datetime_record,$value); 
-                        //echo $id.":".$value."<br>";
+                        echo $id.":".$value."<br>";
                         //PointValueTbController::addModel($id,$datetime_record,$value); 
                         $ipoint++;
 
@@ -178,32 +178,32 @@
         			$start = strpos($str[5], '(');
         			$stop = strpos($str[5], ')');
         			$time = substr($str[5], $start+1,$stop-$start+1);
-        			//echo $time."<br>";
+        			echo $time."<br>";
         			$value = str_replace("(", "", $str[0]);
         			$id = "BK-000058";
         			$datetime_record = $date_record." ".$time;
-        			//echo $datetime_record."]".$id.":".$value."<br>";
+        			echo $datetime_record."]".$id.":".$value."<br>";
         			PointValueTbController::addModel($id,$datetime_record,$value);
 
         			$value = str_replace(")", "", $str[1]);
         			$id = "BK-000061";
         			$datetime_record = $date_record." ".$time;
-        			//echo $datetime_record."]".$id.":".$value."<br>";
+        			echo $datetime_record."]".$id.":".$value."<br>";
         			PointValueTbController::addModel($id,$datetime_record,$value);
 
         			$value = str_replace("(", "", $str[2]);
         			$id = "BK-000059";
         			$datetime_record = $date_record." ".$time;
-        			//echo $datetime_record."]".$id.":".$value."<br>";
+        			echo $datetime_record."]".$id.":".$value."<br>";
         			PointValueTbController::addModel($id,$datetime_record,$value);
 
         			$value = str_replace("(", "", $str[4]);
         			$id = "BK-000060";
         			$datetime_record = $date_record." ".$time;
-        			//echo $datetime_record."]".$id.":".$value."<br>";
+        		    echo $datetime_record."]".$id.":".$value."<br>";
         			PointValueTbController::addModel($id,$datetime_record,$value);
         		}
-        		//echo $column.$row.":".$value."<br>";
+        		echo $column.$row.":".$value."<br>";
         	    $column++;
         	}
 
