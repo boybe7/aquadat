@@ -426,7 +426,7 @@
                         $time = substr($str, $start+1);     
                 }
                 else{
-                        $time = $time1 ;
+                        $time = "0.00" ;
                         $value = $str;
                 }
 

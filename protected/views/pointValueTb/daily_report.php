@@ -59,6 +59,8 @@
         //$datetime_record = "2018-03-01";
         $models2 = PointValueTb::model()->findAll(array('condition'=>'datetime_record=(SELECT MAX(datetime_record) FROM point_value_tb WHERE point_id IN ("BK-000058","BK-000059","BK-000060","BK-000061") AND datetime_record < "'.$date_record.'")'));
 
+        $last_postCl2 = "";
+        if(!empty($models2[0]))
         $last_postCl2 = "(".$models2[0]['point_float_value']."+".$models2[3]['point_float_value'].")+".
                         "(".$models2[1]['point_float_value']."+".$models2[3]['point_float_value'].")+".
                         "(".$models2[2]['point_float_value']."+".$models2[3]['point_float_value'].")"
@@ -367,10 +369,32 @@
             $row++; //skip header section time2
         }
 
-        
+        //Raw water flow rate
+        $row = 23;
+        $column = array('E','I','M'); 
+        $time = explode("-",$shift);
+        $datetime_record = $date_record.' 00.00" AND "'.$date_record." ".$time[1];
+        //echo $datetime_record."<br>";
+        $models3 = PointValueTb::model()->findAll(array(
+             'condition'=>'point_id ="BK-000204" AND datetime_record BETWEEN "'.$datetime_record.'"'
+        ));
+        $i = 0;
+        foreach ($models3 as $key => $m) {
+            echo $m['datetime_record'].":".$m['point_float_value']."<br>";
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column[$i].$row, $m['point_float_value']);
+            $i++;
+        }
 
-
-
+        $models3 = PointValueTb::model()->findAll(array(
+             'condition'=>'point_id ="BK-000205" AND datetime_record BETWEEN "'.$datetime_record.'"'
+        ));
+        $row++;
+        $i=0;
+        foreach ($models3 as $key => $m) {
+            //echo $m['point_float_value']."<br>";
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column[$i].$row, $m['point_float_value']);
+            $i++;
+        }
         //----------------------------End section 5--------------------//
 
         //-----------------Section 6. Free CL2 in TP------------------//
