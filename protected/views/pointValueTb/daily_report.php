@@ -54,6 +54,13 @@
 
         //-----------------Section 2. Chemical Dosage------------------//
         echo "//-----------------Section 2. Chemical Dosage------------------//<br>";
+
+        //SELECT * FROM point_value_tb WHERE datetime_record=(SELECT MAX(datetime_record) FROM `point_value_tb` WHERE datetime_record < "2018-03-01" AND point_id IN ('BK-000058','BK-000059','BK-000060','BK-000061'))
+        $datetime_record = "2018-03-01";
+        $models = PointValueTb::model()->findAll(array('condition'=>'datetime_record=(SELECT MAX(datetime_record) FROM point_value_tb WHERE point_id IN ("BK-000058","BK-000059","BK-000060","BK-000061") AND datetime_record < "'.$datetime_record.'")'));
+        echo "<pre>";
+        print_r($models);
+        echo "</pre>";
         $row = $row_sec1;
         for ($i=0; $i < $nparam; $i++) { 
 
