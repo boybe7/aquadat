@@ -372,6 +372,7 @@
         //Raw water flow rate
         $row = 23;
         $column = array('E','I','M'); 
+        $columnT = array('E','I','M'); 
         $time = explode("-",$shift);
         $datetime_record = $date_record.' 00.00" AND "'.$date_record." ".$time[1];
         //echo $datetime_record."<br>";
@@ -380,8 +381,11 @@
         ));
         $i = 0;
         foreach ($models3 as $key => $m) {
-            echo $m['datetime_record'].":".$m['point_float_value']."<br>";
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column[$i].$row, $m['point_float_value']);
+            //echo $m['datetime_record'].":".$m['point_float_value']."<br>";
+            $str =  explode(" ", $m["datetime_record"]);
+            $str = explode(":",$str[1]);
+            $time = $str[0].".".$str[1];
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column[$i].$row, number_format($m['point_float_value'],0)." CMD (".$time.")");
             $i++;
         }
 
@@ -392,7 +396,10 @@
         $i=0;
         foreach ($models3 as $key => $m) {
             //echo $m['point_float_value']."<br>";
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column[$i].$row, $m['point_float_value']);
+            $str =  explode(" ", $m["datetime_record"]);
+            $str = explode(":",$str[1]);
+            $time = $str[0].".".$str[1];
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column[$i].$row, number_format($m['point_float_value'],0)." CMD (".$time.")");
             $i++;
         }
         //----------------------------End section 5--------------------//
@@ -570,15 +577,218 @@
 
         //-----------------Section 8. Recycle Water--------------------//
         echo "//-----------------Section 8. Recycle Water--------------------//<br>";
+        switch ($shift) {
+        	case '00.00-08.00':
+        		$time1 = '00.00';
+        		break;
 
+        	case '08.00-16.00':
+        		$time1 = '08.00';      	
+        		break;
+        		
+        	case '16.00-24.00':
+        		$time1 = '16.00';
+        		break;		
+        	
+        	default:
+        		$time1 = '00.00';
+        		break;
+        }
+        //echo $time1;
+        //echo $models["BK-000226"]["value"]."<br>";
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AI24", $time1." น.");
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AK24", $models["BK-000226"]["value"]);
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AN24", $models["BK-000227"]["value"]);
         //----------------------------End section 8--------------------//
 
         //-----------------Section 9. Non-Conform --------------------//
         echo "//-----------------Section 9. Non-Conform --------------------//<br>";
+        $row = 28;
+        $ipoint = 228; //start point_id
+        $ipoint2 = 475; //start point_id
+        $nparam = 6;
+        $datetime_record = $date_record." ".$date_begin;
+        //echo $datetime_record;
+        
+        for ($i=0; $i < $nparam; $i++) { 
+        	//no sample
+            $id = "BK-000".$ipoint ;
+            $valueSample = "";
+            if(array_key_exists($id,$models))
+                   $valueSample = $models[$id]['value'];	    
+            echo $id.":".$valueSample."|";
+        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("B".$row, $valueSample);
+            
+
+            //no NC
+            $id = "BK-000".$ipoint2 ;
+            $valueNC = "";
+            if(array_key_exists($id,$models))
+                   $valueNC = $models[$id]['value'];	    
+            echo $id.":".$valueNC."|";
+        	$objPHPExcel->setActiveSheetIndex(0)->setCellValue("C".$row, $valueNC);
+
+           
+
+            //% NC
+            $percent = ($valueNC/$valueSample)*100;
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue("D".$row, $percent);
+            echo "%:".$percent."|";
+
+            //monthy Sample
+            $id = "BK-000".$ipoint ;
+            $str = explode("-",$date_record);
+            $date_month = $str[0]."-".$str[1]."-1 00.00";
+            $model_sec9 = Yii::app()->db->createCommand()
+                        ->select('sum(point_float_value) as sum')
+                        ->from('point_value_tb')
+                        ->where('point_id="'.$id.'" AND datetime_record BETWEEN "'.$date_month.'" AND "'.$date_begin.'"')
+                        ->queryRow();
+            $valueSampleMonth = $model_sec9['sum'];
+            echo $valueSampleMonth."|";
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue("E".$row, $valueSampleMonth);
+
+            //monthy NC
+            $id = "BK-000".$ipoint2 ;
+            $model_sec9 = Yii::app()->db->createCommand()
+                        ->select('sum(point_float_value) as sum')
+                        ->from('point_value_tb')
+                        ->where('point_id="'.$id.'" AND datetime_record BETWEEN "'.$date_month.'" AND "'.$date_begin.'"')
+                        ->queryRow();
+            $valueSampleNC = $model_sec9['sum'];
+            echo $valueSampleNC."|";
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue("F".$row, $valueSampleNC);
+
+            //% NC
+            $percent = ($valueSampleNC/$valueSampleMonth)*100;
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue("G".$row, $percent);
+            echo $percent."|";
+
+            echo "<br>";
+            $ipoint++;
+            $ipoint2++;
+        	$row++;
+        }
+
+       
+      
+
         //----------------------------End section 9--------------------//
 
         //-----------------Section 10. Additional Data--------------------//
         echo "//-----------------Section 10. Additional Data--------------------//<br>";
+        switch ($shift) {
+        	case '00.00-08.00':
+        		$time = array("00.00","04.00");
+        		break;
+
+        	case '08.00-16.00':
+        		$time = array("08.00","12.00");
+        		break;
+        		
+        	case '16.00-24.00':
+        		$time = array("16.00","20.00");
+        		break;		
+        	
+        	default:
+        		$time = array("00.00","04.00");
+        		break;
+        }
+        $row = 28;
+        $nparam = 7;
+            
+        for ($i=0; $i < 2; $i++) { 
+        	$datetime_record = $date_record." ".$time[$i];
+        	echo $datetime_record."<br>";
+        	$ipoint = 234;
+            $column = 'AI';
+            $str = explode(".",$time[$i]);
+            $time_str = $str[0]." น.";
+            //echo $time_str."<br>";
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AH".$row, $time_str);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AO".$row, $time_str);
+            
+            $model_sec10 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="BK-SECTION-010" AND datetime_record= "'.$datetime_record.'"', 'params'=>array()));
+
+            $model_array = array();
+            foreach ($model_sec10 as $key => $m) {
+               //echo $m['point_id'].":".$m['point_float_value']."<br>";
+               $model_array[$m['point_id']] = $m['point_float_value'];
+               //echo $model_array[$m['point_id']]."<br>";
+            }
+
+        	for ($j=0; $j < $nparam; $j++) {
+        	    if($j==$nparam-1){
+        	       $column++;
+        	    }
+        		echo $column.$row.":";
+
+                $id = "BK-000".$ipoint ;
+                $value = empty($model_array[$id]) ? "" : $model_array[$id];
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
+	        	
+	        	echo $value." | ";
+	        	$column++;
+	        	$ipoint++;
+        	}
+        	echo "<br>";
+        	$row++;
+        }
+        echo "----------------<br>";
+       
+       
+        $datetime_record = $date_record." ".$time[0];
+        $model_sec10 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="BK-SECTION-010" AND datetime_record= "'.$datetime_record.'"', 'params'=>array()));
+
+        $model_array = array();
+        foreach ($model_sec10 as $key => $m) {
+               //echo $m['point_id'].":".$m['point_float_value']."<br>";
+               $model_array[$m['point_id']] = $m['point_float_value'];
+               //echo $model_array[$m['point_id']]."<br>";
+        }
+
+        $row = 30;
+        $ipoint = 241;
+        for ($i=0; $i < 3; $i++) { 
+        
+	        $column = 'AF';
+	        for ($j=0; $j < 2; $j++) { 
+                $id = "BK-000".$ipoint ;
+                $value = "";
+                if(array_key_exists($id,$model_array))
+                   $value = $model_array[$id];	    
+	        	//$value = array_key_exists($id,$model_array) ? "" : $model_array[$id];	        	
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
+		        echo $id.":".$value." | ";
+		        $column++;
+		        $ipoint++;
+	        }
+            $row++;
+            echo "<br>";
+        }
+
+        $row = 31;
+        $ipoint = 247;
+        for ($i=0; $i < 2; $i++) { 
+        
+	        $column = 'AI';
+	        for ($j=0; $j < 4; $j++) { 
+	        	$id = "BK-000".$ipoint ;
+                $value = "";
+	        	if(array_key_exists($id,$model_array))
+                   $value = $model_array[$id];   	
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
+		        echo $id.":".$value." | ";
+		        $column++;
+		        $column++;
+		        $ipoint++;
+	        }
+            $row++;
+            echo "<br>";
+        }
+
+       
+
         //----------------------------End section 10--------------------//
 
         $fixbug = new PHPExcel_Style();
@@ -597,24 +807,24 @@
 		//$objPHPExcel->getActiveSheet()->setSharedStyle($fixbug, "H7:I9");
 		
 		//?????important clear cabage
-		// ob_end_clean();
-		// ob_start();
+		ob_end_clean();
+		ob_start();
 
-		// header('Content-Type: application/vnd.ms-excel');
-		// header('Content-Disposition: attachment;filename="daily_report.xls"');
-		// header('Cache-Control: max-age=0');
-		// // If you're serving to IE 9, then the following may be needed
-		// header('Cache-Control: max-age=1');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="daily_report.xls"');
+		header('Cache-Control: max-age=0');
+		// If you're serving to IE 9, then the following may be needed
+		header('Cache-Control: max-age=1');
 
-		// // If you're serving to IE over SSL, then the following may be needed
-		// header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-		// header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-		// header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-		// header ('Pragma: public'); // HTTP/1.0
+		// If you're serving to IE over SSL, then the following may be needed
+		header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+		header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+		header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+		header ('Pragma: public'); // HTTP/1.0
 		
 
-		// $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-		// $objWriter->save('php://output');  //
-		// Yii::app()->end();
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+		$objWriter->save('php://output');  //
+		Yii::app()->end();
 
 ?>		
