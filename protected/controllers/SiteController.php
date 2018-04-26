@@ -48,17 +48,17 @@ class SiteController extends Controller
 	{
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-    //         if(Yii::app()->user->getId()===null)
-    //             $this->redirect(array('site/login'));
-    //         else
-    //         {
-    //         	//$this->layout='//layouts/column2';
-				// //$this->render('index');
+            if(Yii::app()->user->getId()===null)
+                $this->redirect(array('site/login'));
+            else
+            {
+            	$this->layout='//layouts/column2';
+				$this->render('index');
 
 
-    //         }
+            }
 
-             $this->redirect(array('PointValueTb/index'));
+           //  $this->redirect(array('PointValueTb/index'));
 	}
 
 	/**

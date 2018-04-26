@@ -13,7 +13,7 @@
         }
 
 </script>
-
+<br><br><br>
 <?php 
 Yii::app()->clientScript->registerScript('search', "
 $('#search-form form').submit(function(){

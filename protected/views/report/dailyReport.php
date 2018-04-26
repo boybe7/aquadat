@@ -5,7 +5,7 @@
         $objPHPExcel = $objReader->load("report/bk_template.xls");
         date_default_timezone_set("Asia/Bangkok");
 
-        
+        $month_th = array("มกราคม" =>"01","กุมภาพันธ์" =>"02","มีนาคม" =>"03","เมษายน" =>"04","พฤษภาคม" =>"05","มิถุนายน" =>"06","กรกฎาคม" =>"07","สิงหาคม" =>"08","กันยายน" =>"09","ตุลาคม" =>"10","พฤศจิกายน" =>"11","ธันวาคม" =>"12");
 
         $row = 2; //row start
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$row, $year);
@@ -804,32 +804,15 @@
             $row++;
         }
 
-        // for ($i=0; $i < 3; $i++) { 
-        // 	$value = $worksheet->getCell($column.$row);
-        // 	if($value!="")
-        // 	{
-        // 	  PointValueTbController::addModel($id,$datetime_record,$value);	
-        // 	  echo $id.":".$value." | ";
-        // 	}
-        // 	$row++;
-        // }
 
         //----------------------------End Remark-----------------------//
 
-        $fixbug = new PHPExcel_Style();
-		$fixbug->applyFromArray(
-			        array(
-			            'font'  => array(
-			            'name'  => 'Angsana UPC', 
-			            'size'  => 12,              
-			            'color' => array(
-			            'rgb'   => '000080'
-			            )
-			        ),
-			      
-			    ));
-
-		//$objPHPExcel->getActiveSheet()->setSharedStyle($fixbug, "H7:I9");
+        //echo Yii::app()->user->name.":".Yii::app()->user->ID;
+        $user = UsersInfoTb::model()->findByPk(Yii::app()->user->ID);
+        //echo $user->position;
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("P30", Yii::app()->user->name);
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("P31", $user->position." สคบ. ฝผข.");
+        
 		
 		//?????important clear cabage
 		ob_end_clean();
