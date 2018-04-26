@@ -271,10 +271,10 @@
         }
 
         $date_begin = $date_record." ".$time1;
-        $date_end = $date_record." ".$time2;
+        $date_end2 = $date_record." ".$time2;
         $section_id = "BK-SECTION-005";
         //echo $date_end;
-        $model_sec5 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="'.$section_id.'" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
+        $model_sec5 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="'.$section_id.'" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end2.'"', 'params'=>array()));
 
         //print_r($model_sec5);
         $model_array = array();
@@ -431,10 +431,10 @@
         $ntime = 4;
         $nstation = 11;
         $date_begin = $date_record." ".$time1;
-        $date_end = $date_record." ".$time2;
+        $date_end2 = $date_record." ".$time2;
 
         //SELECT * FROM `point_value_tb` pv LEFT JOIN points_main_tb pm ON pv.point_id=pm.point_id WHERE section_id="BK-SECTION-007" AND datetime_record BETWEEN "2018-02-05 08:00:00" AND "2018-02-05 15:00:00" ORDER BY pv.point_id,datetime_record
-        $model_sec6 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="BK-SECTION-006" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
+        $model_sec6 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="BK-SECTION-006" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end2.'"', 'params'=>array()));
 
         $model_array = array();
         $id = 1;
@@ -517,10 +517,10 @@
         $ntime = 8;
         $nstation = 9;
         $date_begin = $date_record." ".$time1;
-        $date_end = $date_record." ".$time2;
+        $date_end2 = $date_record." ".$time2;
 
         //SELECT * FROM `point_value_tb` pv LEFT JOIN points_main_tb pm ON pv.point_id=pm.point_id WHERE section_id="BK-SECTION-007" AND datetime_record BETWEEN "2018-02-05 08:00:00" AND "2018-02-05 15:00:00" ORDER BY pv.point_id,datetime_record
-        $model_sec7 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="BK-SECTION-007" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
+        $model_sec7 = PointValueTb::model()->findAll(array('join' => 'LEFT JOIN points_main_tb ON t.point_id = points_main_tb.point_id', 'order'=>'datetime_record,t.point_id ASC','condition'=>'section_id="BK-SECTION-007" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end2.'"', 'params'=>array()));
 
 		//print_r($model_sec7);
 
@@ -790,6 +790,31 @@
        
 
         //----------------------------End section 10--------------------//
+
+        //-----------------------------Remark---------------------------//
+        echo "//-----------------------------Remark---------------------------//<br>";
+        $row = 25;
+        $column = 'H';
+        $id = "BK-000474";
+
+        $model_remark = PointValueTb::model()->findAll(array('condition'=>'point_id="'.$id.'" AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
+        foreach ($model_remark as $key => $m) {
+            //echo $m["point_id"].":".$m["point_text_value"]."<br>";
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $m["point_text_value"]);
+            $row++;
+        }
+
+        // for ($i=0; $i < 3; $i++) { 
+        // 	$value = $worksheet->getCell($column.$row);
+        // 	if($value!="")
+        // 	{
+        // 	  PointValueTbController::addModel($id,$datetime_record,$value);	
+        // 	  echo $id.":".$value." | ";
+        // 	}
+        // 	$row++;
+        // }
+
+        //----------------------------End Remark-----------------------//
 
         $fixbug = new PHPExcel_Style();
 		$fixbug->applyFromArray(
