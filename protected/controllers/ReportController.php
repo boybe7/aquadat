@@ -80,7 +80,22 @@ class ReportController extends Controller
 		 ));
 
 	}
-    
+	
+	public function actionDrainReport()
+	{		
+		$this->render('_reportDrain');
+	}
+
+	public function actionGenDrainReport()
+	{
+    	$month = $_GET["month"];
+        $year = $_GET["year"];
+		$this->renderPartial('_formDrainReport', array(
+			'month'=>$month,
+            'year'=>$year,
+            'display' => 'block',
+        ), false, true);
+	}
 
 }
 

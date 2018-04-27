@@ -5,8 +5,12 @@
         $objPHPExcel = $objReader->load("report/bk_template.xls");
         date_default_timezone_set("Asia/Bangkok");
 
-        $month_th = array("มกราคม" =>"01","กุมภาพันธ์" =>"02","มีนาคม" =>"03","เมษายน" =>"04","พฤษภาคม" =>"05","มิถุนายน" =>"06","กรกฎาคม" =>"07","สิงหาคม" =>"08","กันยายน" =>"09","ตุลาคม" =>"10","พฤศจิกายน" =>"11","ธันวาคม" =>"12");
+        $str = explode("-",$date_record);
+        $year = $str[0]+543;
+        $day = $str[2];
 
+        $month_th = array("01"=>"มกราคม","02"=>"กุมภาพันธ์" ,"03"=>"มีนาคม","04"=>"เมษายน","05"=>"พฤษภาคม","06"=>"มิถุนายน","07"=>"กรกฎาคม","08"=>"สิงหาคม","09"=>"กันยายน","10"=>"ตุลาคม","11"=>"พฤศจิกายน","12"=>"ธันวาคม");
+        $month = $month_th[$str[1]];
         $row = 2; //row start
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D'.$row, $year);
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('X'.$row, $day);

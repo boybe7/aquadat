@@ -1,8 +1,8 @@
 <?php
-// $this->breadcrumbs=array(
-// 	'Cl2 - Pumping Station'=>array('index'),
+$this->breadcrumbs=array(
+	'Record',
 	
-// );
+);
 
 ?>
 <script type="text/javascript">
@@ -13,7 +13,7 @@
         }
 
 </script>
-<br><br><br>
+
 <?php 
 Yii::app()->clientScript->registerScript('search', "
 $('#search-form form').submit(function(){
