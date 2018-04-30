@@ -57,13 +57,17 @@ function displayDate($date)
   <table class="table  table-bordered table-condensed" >
      <thead>
       <tr>
-        <th style="text-align:center;width:5%">ลำดับ</th>
-        <th style="text-align:center;width:15%">เลขที่ใบแจ้งชำระเงิน</th>
-        <th style="text-align:center;width:30%">เจ้าของตัวอย่าง</th>
-        <th style="text-align:center;width:15%">วันที่รับตัวอย่าง</th>
-        <th style="text-align:center;width:15%">จำนวนเงิน</th>
-        <th style="text-align:center;width:25%">เลขที่ชำระ/วันที่ชำระ</th>
-       
+        <th rowspan=2 style="vertical-align:center;text-align:center;width:25%;">วัน</th>
+        <th colspan=3 style="text-align:center;width:45%">ความขุ่นน้ำระบายออกนอกโรงงาน (NTU)</th>
+        <th colspan=2 style="text-align:center;width:30%">ความขุ่นน้ำนำกลับ (NTU)</th>      
+      </tr>
+      <tr>
+        <th style="text-align:center;width:15%">00.00 น.</th>
+        <th style="text-align:center;width:15%">10.00 น.</th>
+        <th style="text-align:center;width:15%">16.00 น.</th> 
+
+        <th style="text-align:center;width:15%">10.00 น.</th>
+        <th style="text-align:center;width:15%">หมายเหตุ</th>     
       </tr>
     </thead>
     <tbody>
