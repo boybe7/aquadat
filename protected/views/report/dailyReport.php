@@ -468,8 +468,10 @@
                 
                     $column++;    
                 }
-               
-                $value = $model_array[$id][$time_int]!=0 && empty($model_array[$id][$time_int])  ? "-" : $model_array[$id][$time_int];
+                $value = "";
+                if(array_key_exists($id,$model_array))
+                   $value = $model_array[$id][$time_int];	    
+               // $value = $model_array[$id][$time_int]!=0 && empty($model_array[$id][$time_int])  ? "-" : $model_array[$id][$time_int];
                 //$value =  $model_array[$id][$time_int];
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
                 //if(empty($model_array[$id][$time_int]))
@@ -601,8 +603,10 @@
         //echo $time1;
         //echo $models["BK-000226"]["value"]."<br>";
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AI24", $time1." น.");
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AK24", $models["BK-000226"]["value"]);
-        $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AN24", $models["BK-000227"]["value"]);
+        if(array_key_exists("BK-000226",$models))
+             $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AK24", $models["BK-000226"]["value"]);
+        if(array_key_exists("BK-000227",$models))     
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue("AN24", $models["BK-000227"]["value"]);
         //----------------------------End section 8--------------------//
 
         //-----------------Section 9. Non-Conform --------------------//
@@ -635,7 +639,7 @@
            
 
             //% NC
-            $percent = ($valueNC/$valueSample)*100;
+            $percent = $valueSample==0 ? 0 : ($valueNC/$valueSample)*100;
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue("D".$row, $percent);
             echo "%:".$percent."|";
 
@@ -664,7 +668,7 @@
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue("F".$row, $valueSampleNC);
 
             //% NC
-            $percent = ($valueSampleNC/$valueSampleMonth)*100;
+            $percent = $valueSampleMonth==0 ? 0 : ($valueSampleNC/$valueSampleMonth)*100;
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue("G".$row, $percent);
             echo $percent."|";
 
@@ -680,7 +684,7 @@
         //----------------------------End section 9--------------------//
 
         //-----------------Section 10. Additional Data--------------------//
-        echo "//-----------------Section 10. Additional Data--------------------//<br>";
+        //echo "//-----------------Section 10. Additional Data--------------------//<br>";
         switch ($shift) {
         	case '00.00-08.00':
         		$time = array("00.00","04.00");
@@ -703,7 +707,7 @@
             
         for ($i=0; $i < 2; $i++) { 
         	$datetime_record = $date_record." ".$time[$i];
-        	echo $datetime_record."<br>";
+        	//echo $datetime_record."<br>";
         	$ipoint = 234;
             $column = 'AI';
             $str = explode(".",$time[$i]);
@@ -725,20 +729,20 @@
         	    if($j==$nparam-1){
         	       $column++;
         	    }
-        		echo $column.$row.":";
+        		//echo $column.$row.":";
 
                 $id = "BK-000".$ipoint ;
                 $value = empty($model_array[$id]) ? "" : $model_array[$id];
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
 	        	
-	        	echo $value." | ";
+	        	//echo $value." | ";
 	        	$column++;
 	        	$ipoint++;
         	}
-        	echo "<br>";
+        	//echo "<br>";
         	$row++;
         }
-        echo "----------------<br>";
+        //echo "----------------<br>";
        
        
         $datetime_record = $date_record." ".$time[0];
@@ -763,12 +767,12 @@
                    $value = $model_array[$id];	    
 	        	//$value = array_key_exists($id,$model_array) ? "" : $model_array[$id];	        	
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
-		        echo $id.":".$value." | ";
+		        //echo $id.":".$value." | ";
 		        $column++;
 		        $ipoint++;
 	        }
             $row++;
-            echo "<br>";
+            //echo "<br>";
         }
 
         $row = 31;
@@ -782,13 +786,13 @@
 	        	if(array_key_exists($id,$model_array))
                    $value = $model_array[$id];   	
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue($column.$row, $value);
-		        echo $id.":".$value." | ";
+		        //echo $id.":".$value." | ";
 		        $column++;
 		        $column++;
 		        $ipoint++;
 	        }
             $row++;
-            echo "<br>";
+            //echo "<br>";
         }
 
        
@@ -796,7 +800,7 @@
         //----------------------------End section 10--------------------//
 
         //-----------------------------Remark---------------------------//
-        echo "//-----------------------------Remark---------------------------//<br>";
+        //echo "//-----------------------------Remark---------------------------//<br>";
         $row = 25;
         $column = 'H';
         $id = "BK-000474";
@@ -819,11 +823,13 @@
         
 		
 		//?????important clear cabage
-		ob_end_clean();
-		ob_start();
+	    ob_end_clean();
+        ob_start();
+        
+        $filename = 'fpb_lab_'.$day.$month.$year.'.xls';
 
 		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="daily_report.xls"');
+		header('Content-Disposition: attachment;filename="'.$filename.'"');
 		header('Cache-Control: max-age=0');
 		// If you're serving to IE 9, then the following may be needed
 		header('Cache-Control: max-age=1');

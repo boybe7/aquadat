@@ -94,18 +94,8 @@ $this->breadcrumbs=array(
 Yii::app()->clientScript->registerScript('gentReport', '
 $("#gentReport").click(function(e){
     e.preventDefault();
-
-       
-        $.ajax({
-            url: "GenDailyReport",
-            cache:false,
-            data: {date:$("#date").val(),shift:$("#shift").val()},
-            success:function(response){
-               
-               $("#printcontent").html(response);                 
-            }
-
-        });
+    window.location.href = "GenDailyReport?date="+$("#date").val()+"&shift="+$("#shift").val();
+   
     
 });
 ', CClientScript::POS_END);

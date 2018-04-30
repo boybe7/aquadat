@@ -151,15 +151,15 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 <br>
 <?php 
 
-$this->widget('bootstrap.widgets.TbButton', array(
-    'buttonType'=>'link',
+// $this->widget('bootstrap.widgets.TbButton', array(
+//     'buttonType'=>'link',
     
-    'type'=>'success',
-    'label'=>'Export to Excel',
-    'icon'=>'plus-sign',
-    'url'=>array('dailyReport'),
-    'htmlOptions'=>array('class'=>'pull-right','style'=>'margin:0px 10px 0px 10px;'),
-)); 
+//     'type'=>'success',
+//     'label'=>'Export to Excel',
+//     'icon'=>'plus-sign',
+//     'url'=>array('dailyReport'),
+//     'htmlOptions'=>array('class'=>'pull-right','style'=>'margin:0px 10px 0px 10px;'),
+// )); 
 
 
 $this->widget('bootstrap.widgets.TbGridView',array(

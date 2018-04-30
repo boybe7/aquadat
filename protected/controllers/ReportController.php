@@ -39,12 +39,8 @@ class ReportController extends Controller
         $time_begin = $str[0];
         $time_end = $str[1];
 
-        $day = 23;
-		$month = 'กุมภาพันธ์';
-		$year = 2561;
-
-		$date_begin = "2018-03-01 ".$time_begin;
-        $date_end = "2018-03-01 ".$time_end;
+		$date_begin = $date_record ." ".$time_begin;
+        $date_end = $date_record ." ".$time_end;
         $date = new DateTime($date_end);
         $date->modify('-1 minutes');
         $date_end = $date->format('Y-m-d H:i') ;
