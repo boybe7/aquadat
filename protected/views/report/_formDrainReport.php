@@ -24,9 +24,16 @@
 .table-fixed thead > tr> th {
   float: left;
   text-align: center;
-
   background-color: #f5f5f5;
+}
 
+.table tfoot > tr> td {
+  text-align: center;
+  background-color: rgba(171, 168, 168, 0.25);
+}
+
+.table td {
+  text-align : center;
 }
 
 
@@ -34,6 +41,9 @@
 
 
 <?php
+        $days_in_month = cal_days_in_month(CAL_GREGORIAN,intval($month),$year-543);
+        //echo $days_in_month;
+        $month_int = $month;  
         $month_th = array("01"=>"มกราคม","02"=>"กุมภาพันธ์" ,"03"=>"มีนาคม","04"=>"เมษายน","05"=>"พฤษภาคม","06"=>"มิถุนายน","07"=>"กรกฎาคม","08"=>"สิงหาคม","09"=>"กันยายน","10"=>"ตุลาคม","11"=>"พฤศจิกายน","12"=>"ธันวาคม");
         $month = $month_th[$month];
 ?>
@@ -72,12 +82,204 @@ function displayDate($date)
     </thead>
     <tbody>
           <?php
+             $min_point1_00 = 999;
+             $max_point1_00 = 0;
+             $min_point1_10 = 999;
+             $max_point1_10 = 0;
+             $min_point1_16 = 999;
+             $max_point1_16 = 0;
+             $min_point2_10 = 999;
+             $max_point2_10 = 0; 
              
+             for ($i=1; $i < $days_in_month+1; $i++) { 
+                echo "<tr>";
+                    echo "<td>";
+                        echo $i." ".$month." ".$year; 
+                    echo "</td>";
+                    $day = $i<10 ? "0".$i : $i;
+                    $date_record = ($year-543)."-".$month_int."-".$day." 0.00";                   
+                    $models = PointValueTb::model()->findAll(array('join' => '','condition'=>'point_id="BK-000302"  AND datetime_record ="'.$date_record.'" ', 'params'=>array()));
+                    $value = empty($models) ? "-":$models[0]->point_float_value;
+                    if(!empty($models))
+                    {
+                       $min_point1_00 = $min_point1_00 < $value ? $min_point1_00 : $value;
+                       $max_point1_00 = $max_point1_00 > $value ? $max_point1_00 : $value;
+                    }
+                    echo "<td>";
+                        echo $value; 
+                    echo "</td>";
+                    $date_record = ($year-543)."-".$month_int."-".$day." 10.00";                   
+                    $models = PointValueTb::model()->findAll(array('join' => '','condition'=>'point_id="BK-000302"  AND datetime_record ="'.$date_record.'" ', 'params'=>array()));
+                    $value = empty($models) ? "-":$models[0]->point_float_value;
+                    if(!empty($models))
+                    {
+                       $min_point1_10 = $min_point1_10 < $value ? $min_point1_10 : $value;
+                       $max_point1_10 = $max_point1_10 > $value ? $max_point1_10 : $value;
+                    }
+                    echo "<td>";
+                        echo $value; 
+                    echo "</td>";
+                    $date_record = ($year-543)."-".$month_int."-".$day." 16.00";                   
+                    $models = PointValueTb::model()->findAll(array('join' => '','condition'=>'point_id="BK-000302"  AND datetime_record ="'.$date_record.'" ', 'params'=>array()));
+                    $value = empty($models) ? "-":$models[0]->point_float_value;
+                    if(!empty($models))
+                    {
+                       $min_point1_16 = $min_point1_16 < $value ? $min_point1_16 : $value;
+                       $max_point1_16 = $max_point1_16 > $value ? $max_point1_16 : $value;
+                    }
+                    echo "<td>";
+                        echo $value; 
+                    echo "</td>";
+
+                    $date_record = ($year-543)."-".$month_int."-".$day." 0.00";                   
+                    $models = PointValueTb::model()->findAll(array('join' => '','condition'=>'point_id="BK-000303"  AND datetime_record ="'.$date_record.'" ', 'params'=>array()));
+                    $value = empty($models) ? "-":$models[0]->point_float_value;
+                    if(!empty($models))
+                    {
+                       $min_point2_10 = $min_point2_10 < $value ? $min_point2_10 : $value;
+                       $max_point2_10 = $max_point2_10 > $value ? $max_point2_10 : $value;
+                    }
+                    echo "<td>";
+                        echo $value; 
+                    echo "</td>";
+                    echo "<td>";
+                        echo "";  
+                    echo "</td>";
+
+                echo "</tr>";
+             }
 
             ?>
 
 
     </tbody>
+    <tfoot>
+      <tr>
+        <td>MIN</td>
+        <?php
+           $value = $min_point1_00==999 ? "-" : $min_point1_00;
+           echo "<td>".$value."</td>";
+           $value = $min_point1_10==999 ? "-" : $min_point1_10;
+           echo "<td>".$value."</td>";
+           $value = $min_point1_16==999 ? "-" : $min_point1_16;
+           echo "<td>".$value."</td>";
+           $value = $min_point2_10==999 ? "-" : $min_point2_10;
+           echo "<td>".$value."</td>";
+
+        ?>     
+     
+        <td></td>
+        
+      </tr>
+      <tr>
+        <td>MAX</td>
+        <?php
+           $value = $max_point1_00==0 ? "-" : $max_point1_00;
+           echo "<td>".$value."</td>";
+           $value = $max_point1_10==0 ? "-" : $max_point1_10;
+           echo "<td>".$value."</td>";
+           $value = $max_point1_16==0 ? "-" : $max_point1_16;
+           echo "<td>".$value."</td>";
+           $value = $max_point2_10==0 ? "-" : $max_point2_10;
+           echo "<td>".$value."</td>";
+          
+        ?>   
+        <td></td>
+        
+      </tr>
+      <tr>
+        <td>AVG</td>
+        <?php
+           //SELECT * FROM `point_value_tb` WHERE DATE_FORMAT(datetime_record,'%H:%i:%s')="10:00:00" AND datetime_record BETWEEN "2018-02-01 00.00" AND "2018-02-28 23.00"        
+           // SELECT STDDEV_SAMP(point_float_value) FROM `point_value_tb` WHERE point_id='BK-000302'
+           
+           $date_begin = ($year-543)."-".$month_int."-01 00.00";
+           $date_end = ($year-543)."-".$month_int."-".$days_in_month." 23.59";
+           //$models = PointValueTb::model()->findAll(array('select' => 'AVG(point_float_value) as avg','condition'=>'point_id="BK-000302" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="00:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
+           $models = Yii::app()->db->createCommand()
+                        ->select('AVG(point_float_value) as avg')
+                        ->from('point_value_tb')
+                        ->where('point_id="BK-000302" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="00:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"')
+                        ->queryAll();
+          $value = empty($models) ? "-": number_format($models[0]['avg'],2);
+          echo "<td>".$value."</td>";
+
+           $models = Yii::app()->db->createCommand()
+                      ->select('AVG(point_float_value) as avg')
+                      ->from('point_value_tb')
+                      ->where('point_id="BK-000302" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="10:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"')
+                      ->queryAll();
+                      $value = empty($models) ? "-": number_format($models[0]['avg'],2);
+           echo "<td>".$value."</td>";
+
+           $models = Yii::app()->db->createCommand()
+                      ->select('AVG(point_float_value) as avg')
+                      ->from('point_value_tb')
+                      ->where('point_id="BK-000302" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="16:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"')
+                      ->queryAll();
+                      $value = empty($models) ? "-": number_format($models[0]['avg'],2);
+            echo "<td>".$value."</td>";
+
+
+            $models = Yii::app()->db->createCommand()
+                        ->select('AVG(point_float_value) as avg')
+                        ->from('point_value_tb')
+                        ->where('point_id="BK-000303" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="10:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"')
+                        ->queryAll();
+            $value = empty($models) ? "-": number_format($models[0]['avg'],2);
+            echo "<td>".$value."</td>";
+        ?>
+       
+     
+        <td></td>
+        
+      </tr>
+      <tr>
+        <td>STD</td>
+        <?php
+           //SELECT * FROM `point_value_tb` WHERE DATE_FORMAT(datetime_record,'%H:%i:%s')="10:00:00" AND datetime_record BETWEEN "2018-02-01 00.00" AND "2018-02-28 23.00"        
+           // SELECT STDDEV_SAMP(point_float_value) FROM `point_value_tb` WHERE point_id='BK-000302'
+           
+           $date_begin = ($year-543)."-".$month_int."-01 00.00";
+           $date_end = ($year-543)."-".$month_int."-".$days_in_month." 23.59";
+           //$models = PointValueTb::model()->findAll(array('select' => 'AVG(point_float_value) as avg','condition'=>'point_id="BK-000302" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="00:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"', 'params'=>array()));
+           $models = Yii::app()->db->createCommand()
+                        ->select('STDDEV_SAMP(point_float_value) as sd')
+                        ->from('point_value_tb')
+                        ->where('point_id="BK-000302" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="00:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"')
+                        ->queryAll();
+          $value = empty($models) ? "-": number_format($models[0]['sd'],2);
+          echo "<td>".number_format($value,2)."</td>";
+
+           $models = Yii::app()->db->createCommand()
+                      ->select('STDDEV_SAMP(point_float_value) as sd')
+                      ->from('point_value_tb')
+                      ->where('point_id="BK-000302" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="10:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"')
+                      ->queryAll();
+          $value = empty($models) ? "-": number_format($models[0]['sd'],2);
+           echo "<td>".number_format($value,2)."</td>";
+
+           $models = Yii::app()->db->createCommand()
+                      ->select('STDDEV_SAMP(point_float_value) as sd')
+                      ->from('point_value_tb')
+                      ->where('point_id="BK-000302" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="16:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"')
+                      ->queryAll();
+           $value = empty($models) ? "-": number_format($models[0]['sd'],2);
+            echo "<td>".number_format($value,2)."</td>";
+
+
+            $models = Yii::app()->db->createCommand()
+                        ->select('STDDEV_SAMP(point_float_value) as sd')
+                        ->from('point_value_tb')
+                        ->where('point_id="BK-000303" AND DATE_FORMAT(datetime_record,"%H:%i:%s")="10:00:00"   AND datetime_record BETWEEN "'.$date_begin.'" AND "'.$date_end.'"')
+                        ->queryAll();
+            $value = empty($models) ? "-": number_format($models[0]['sd'],2);
+            echo "<td>".number_format($value,2)."</td>";
+        ?>
+        <td></td>
+        
+      </tr>
+    </tfoot>
   </table>
 
 

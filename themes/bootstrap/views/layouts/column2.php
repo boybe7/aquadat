@@ -37,7 +37,7 @@ if(!Yii::app()->user->isGuest)
                     echo  '<li><label class="tree-toggle nav-header" style="color:black">บันทึก</label>';
                     echo  '<ul class="nav nav-list tree">';
                   
-                        echo '<li>'.CHtml::link('บันทึกข้อมูล','PointValueTb/index').'</li>';
+                        echo '<li>'.CHtml::link('บันทึกข้อมูล',Yii::app()->baseUrl.'/PointValueTb/index').'</li>';
                        
                     echo '</ul>';
                     echo '</li>';
@@ -45,8 +45,8 @@ if(!Yii::app()->user->isGuest)
                     echo  '<ul class="nav nav-list tree">';
                   
                       
-                        echo '<li>'.CHtml::link('รายงานผลการวิเคราะห์คุณภาพน้ำระบบผลิตประจำผลัด','report/dailyReport').'</li>';
-                        echo '<li>'.CHtml::link('รายงานผลการวิเคราะห์คุณภาพน้ำระบายออกนอกโรงงาน','report/drainReport').'</li>';
+                        echo '<li>'.CHtml::link('รายงานผลการวิเคราะห์คุณภาพน้ำระบบผลิตประจำผลัด',Yii::app()->baseUrl.'/report/dailyReport').'</li>';
+                        echo '<li>'.CHtml::link('รายงานผลการวิเคราะห์คุณภาพน้ำระบายออกนอกโรงงาน',Yii::app()->baseUrl.'/report/drainReport').'</li>';
                   
                     echo '</ul>';
          
