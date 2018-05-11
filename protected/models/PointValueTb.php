@@ -56,7 +56,7 @@ class PointValueTb extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'point_main'=>array(self::BELONGS_TO, 'PointsMainTb', 'point_id'),
+			'point_main'=>array(self::BELONGS_TO, 'PointsMainTb', 'point_id', 'foreignKey' => array('point_id'=>'point_id')),
 		);
 	}
 
@@ -80,17 +80,7 @@ class PointValueTb extends CActiveRecord
 		);
 	}
 
-	function behaviors() {
-	    return array(
-	        'relatedsearch'=>array(
-	             'class'=>'RelatedSearchBehavior',
-	             'relations'=>array(
-	                  'section_id'=>'point_main.section_id'
-
-	             ),
-	         ),
-	    );
-	}
+	
 
 
 	/**
@@ -213,6 +203,7 @@ class PointValueTb extends CActiveRecord
 		$point_type = $models[0]->point_type_id;
 	
 		$value = $point_type=="POINT-TYPE-001" ? $m->point_float_value : $m->point_text_value; 
+		//$value = 'test';
         return $value;
     }
 }

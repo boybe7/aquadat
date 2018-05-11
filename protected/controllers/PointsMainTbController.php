@@ -181,14 +181,14 @@ class PointsMainTbController extends Controller
  
 
         $data = Yii::app()->db->createCommand()
-			    ->selectDistinct('p.category_id,category_title')
+			    ->selectDistinct('p.category_id,category_name')
 			    ->from('points_main_tb p')
 			    ->join('category_tb c', 'c.category_id=p.category_id')
 			    ->where('section_id=:id', array(':id'=>$section))
 			    ->queryAll();  
 
        
-        $data = CHtml::listData($data, 'category_id', 'category_title');
+        $data = CHtml::listData($data, 'category_id', 'category_name');
 
         
         
@@ -212,12 +212,8 @@ class PointsMainTbController extends Controller
 			    ->from('points_main_tb')
 			    ->where('section_id=:id AND category_id=:cid ', array(':id'=>$section,':cid'=>$category))
 			    ->queryAll();  
-
        
-        $data = CHtml::listData($data, 'point_id', 'point_name');
-
-        
-        
+        $data = CHtml::listData($data, 'point_id', 'point_name');               
         echo CHtml::tag('option', array('value' => ''), CHtml::encode("--เลือก point--"), true);
   
         foreach ($data as $value => $name) {   

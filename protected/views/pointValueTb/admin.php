@@ -9,7 +9,8 @@ $this->breadcrumbs=array(
     
   
         function getCategory(){
-            return $("#section").val();
+            //alert($("#section").val())
+            return $("#section_id").val();
         }
 
 </script>
@@ -33,13 +34,14 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'type'=>'inline',
     'htmlOptions'=>  array('class'=>'well','style'=>'margin:0 auto;padding-top:20px;'),
     'action'=>Yii::app()->createUrl($this->route),
-    'method'=>'get',
+    'method'=>'post',
 )); ?>
 
     <div class="row-fluid">
      
       
-       <div class="span3"> 
+       <div class="span2"> 
+            <label for="section_id" >Section</label>
         <?php 
         
        
@@ -66,6 +68,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
          ?>
        </div>
        <div class="span2"> 
+            <label for="category" >Category</label>
         <?php 
         
        
@@ -83,7 +86,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                                                 'type'=>'POST', //request type
                                                 'data'=>array('section'=>'js:getCategory()','category'=>'js:this.value'),
                                                 'url'=>CController::createUrl('./pointsMainTb/getPointList'),        
-                                                'update'=>'#PointValueTb_point_id', //selector to update
+                                                'update'=>'#point_id', //selector to update
                                         
                                             )
                                         ));
@@ -92,6 +95,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
          ?>
        </div>
        <div class="span2"> 
+            <label for="point_id" >Point</label>
         <?php 
         
        
@@ -99,7 +103,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                 $data = array();
                 
                 $typelist = CHtml::listData($data,'value','text');
-                echo CHtml::dropDownList('PointValueTb[point_id]', '', $typelist, array('class'=>'span12','empty' => '--เลือก point--'));
+                echo CHtml::dropDownList('point_id', '', $typelist, array('class'=>'span12','empty' => '--เลือก point--'));
                 //echo $form->dropDownListRow($model, 'point_id',$typelist, array('class'=>'span12','empty' => '--เลือก point--'));
 
          ?>
@@ -107,25 +111,44 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
      
         <div class="span2">
             <?php
-          
+            echo ' <label for="date_begin" >วันที่เริ่มต้น</label>';
             echo '<div class="input-append" style="margin-top:0px;">'; //ใส่ icon ลงไป
             $this->widget('zii.widgets.jui.CJuiDatePicker',
                     array(
-                        'name' => 'PointValueTb[datetime_record]',
-                        'attribute' => 'PointValueTb[datetime_record]',
+                        'name' => 'date_begin',
+                        'attribute' => 'date_begin',
                         'options' => array(
                             'mode' => 'focus',
                             //'language' => 'th',
                             'format' => 'yyyy-mm-dd', //กำหนด date Format
                             'showAnim' => 'slideDown',
                         ),
-                        'htmlOptions' => array('class' => 'span12'), // ใส่ค่าเดิม ในเหตุการ Update
+                        'htmlOptions' => array('class' => 'span10'), // ใส่ค่าเดิม ในเหตุการ Update
                     )
             );
             echo '<span class="add-on"><i class="icon-calendar"></i></span></div>';
             ?>
         </div>
-       
+        <div class="span2">
+            <?php
+            echo ' <label for="date_end" >วันที่สิ้นสุด</label>';
+            echo '<div class="input-append" style="margin-top:0px;">'; //ใส่ icon ลงไป
+            $this->widget('zii.widgets.jui.CJuiDatePicker',
+                    array(
+                        'name' => 'date_end',
+                        'attribute' => 'date_end',
+                        'options' => array(
+                            'mode' => 'focus',
+                            //'language' => 'th',
+                            'format' => 'yyyy-mm-dd', //กำหนด date Format
+                            'showAnim' => 'slideDown',
+                        ),
+                        'htmlOptions' => array('class' => 'span10'), // ใส่ค่าเดิม ในเหตุการ Update
+                    )
+            );
+            echo '<span class="add-on"><i class="icon-calendar"></i></span></div>';
+            ?>
+        </div>
         <?php
              
 
@@ -136,7 +159,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                     'label'=>'ค้นหา',
                     'icon'=>'search white',
                 // 'url'=>array('update'),
-                    'htmlOptions'=>array('class'=>'span2 pull-right search-button'),
+                    'htmlOptions'=>array('class'=>'span2 pull-right search-button','style'=>'margin-top:25px'),
                 ));
 
               
@@ -164,9 +187,9 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 
 $this->widget('bootstrap.widgets.TbGridView',array(
 	'id'=>'point-value-tb-grid',
-	'dataProvider'=>$model->search(),
+	'dataProvider'=>$model,
 	'type'=>'bordered condensed',
-	'filter'=>$model,
+	//'filter'=>$model,
 	'selectableRows' =>2,
 	'htmlOptions'=>array('style'=>'padding-top:40px'),
     'enablePagination' => true,
@@ -187,7 +210,8 @@ $this->widget('bootstrap.widgets.TbGridView',array(
                 'name' => 'section_id',
                 
                 'header' => 'section',
-                'value' => array($model,'getSectionName'),
+                //'value' => array($model,'getSectionName'),
+                'value' => '$data->getSectionName($data)',
                 //'filter'=>CHtml::activeTextField($model, 'point_id',array("placeholder"=>"ค้นหาตาม".$model->getAttributeLabel("point_id"))),
                 //'value'=>'$data->category_id',
                 //'value'=>'PointsMainTb::Model()->FindByPk($data->owner_id)->name',
@@ -198,7 +222,8 @@ $this->widget('bootstrap.widgets.TbGridView',array(
                 'name' => 'category_id',
                 
                 'header' => 'category',
-                'value' => array($model,'getCategoryName'),
+                //'value' => array($model,'getCategoryName'),
+                'value' => '$data->getCategoryName($data)',
                 //'filter'=>CHtml::activeTextField($model, 'point_id',array("placeholder"=>"ค้นหาตาม".$model->getAttributeLabel("point_id"))),
                 //'value'=>'$data->category_id',
                 //'value'=>'PointsMainTb::Model()->FindByPk($data->owner_id)->name',
@@ -208,21 +233,36 @@ $this->widget('bootstrap.widgets.TbGridView',array(
 		'point_id'=>array(
 			    'name' => 'point_id',
 			    //'filter'=>CHtml::activeTextField($model, 'point_id',array("placeholder"=>"ค้นหาตาม".$model->getAttributeLabel("point_id"))),
-				'value' => array($model,'getPointName'),
+                //'value' => array($model,'getPointName'),
+                'value' => '$data->getPointName($data)',
+
 				'headerHtmlOptions' => array('style' => 'width:15%;text-align:center;background-color: #f5f5f5'),	            	  	
 				'htmlOptions'=>array('style'=>'text-align:center;')
 	  	),
 	  	'datetime_record'=>array(
 			   
 			    'name'=>'datetime_record',
-			    'value' => array($model,'getDate'),
+                //'value' => array($model,'getDate'),
+                'value' => '$data->getDate($data)',
+                
 			    //'filter'=>CHtml::activeTextField($model, 'datetime_record',array("placeholder"=>"ค้นหาตาม".$model->getAttributeLabel("datetime_record"))),
 				'headerHtmlOptions' => array('style' => 'width:10%;text-align:center;background-color: #f5f5f5'),  	            	  	
 				'htmlOptions'=>array('style'=>'text-align:center;')
 	  	),
 		'point_value'=>array(
                 'name' => 'point_float_value',
-                'value' => array($model,'getValue'),
+                'value' => '$data->getValue($data)',
+                'class' => 'editable.EditableColumn',
+                'editable' => array( //editable section
+					'title'=>'แก้ไข',
+					'url' => $this->createUrl('update'),
+					'options' => array(
+						'ajaxOptions' => array('dataType' => 'json'),
+
+					), 
+					'placement' => 'right',
+					
+                ),
 			    //'filter'=>CHtml::activeTextField($model, 'point_value',array("placeholder"=>"ค้นหาตาม".$model->getAttributeLabel("point_value"))),
 				'headerHtmlOptions' => array('style' => 'width:10%;text-align:center;background-color: #f5f5f5'),  	            	  	
 				'htmlOptions'=>array('style'=>'text-align:right;padding-right:10px')

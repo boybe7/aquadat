@@ -64,7 +64,7 @@ class PointsMainTb extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'category'=>array(self::BELONGS_TO, 'CategoryTb', 'category_id'),
-			'point_value'=>array(self::HAS_ONE, 'PointValueTb', 'point_id'),
+			'point_value'=>array(self::BELONGS_TO, 'PointValueTb', 'point_id'),
 		);
 	}
 

@@ -83,23 +83,19 @@ class PointValueTbController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id)
+	public function actionUpdate()
 	{
-		$model=$this->loadModel($id);
+		$es = new EditableSaver('PointValueTb');
+	
+	    try {
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['PointValueTb']))
-		{
-			$model->attributes=$_POST['PointValueTb'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
-
-		$this->render('update',array(
-			'model'=>$model,
-		));
+	    	$es->update();
+	  
+	    } catch(CException $e) {
+	    	echo CJSON::encode(array('success' => false, 'msg' => $e->getMessage()));
+	    	return;
+	    }
+	    echo CJSON::encode(array('success' => true));
 	}
 
 	/**
@@ -132,8 +128,44 @@ class PointValueTbController extends Controller
 		if(isset($_GET['PointValueTb']))
 			$model->attributes=$_GET['PointValueTb'];
 
+		$criteria = new CDbCriteria();
+		if(isset($_REQUEST['section_id']))
+		{
+
+			$criteria->with = array('point_main');
+			$criteria->compare('point_main.section_id',$_REQUEST['section_id'],true);	
+			$criteria->compare('point_main.category_id',$_REQUEST['category'],true);	
+			
+		}
+		if(isset($_REQUEST['point_id']))
+		   $criteria->compare('t.point_id',$_REQUEST['point_id'],true);	
+
+		if(!empty($_REQUEST['date_begin']) && !empty($_REQUEST['date_end']))
+		{
+			$begin = $_REQUEST['date_begin'];
+			$end = $_REQUEST['date_end'];
+			$criteria->addBetweenCondition('t.datetime_record', $begin, $end, 'AND');
+		}
+		else if(!empty($_REQUEST['date_begin']))
+		{
+			$begin = $_REQUEST['date_begin']." 00:00";
+			$end = $_REQUEST['date_begin']." 23:59";
+			$criteria->addBetweenCondition('t.datetime_record', $begin, $end, 'AND');
+			//header('Content-type: text/plain charset=utf-8');
+			//echo $begin;
+			//exit;
+		} 
+		else if(!empty($_REQUEST['date_end']))
+		{
+			$begin = $_REQUEST['date_begin'];
+			$end = $_REQUEST['date_begin'];
+			$criteria->addBetweenCondition('t.datetime_record', $begin, $end, 'AND');
+		}  
+		
+		$cri=new CActiveDataProvider("PointValueTb", array('criteria'=>$criteria,'pagination'=>array('pageSize'=>10)));
+
 		$this->render('admin',array(
-			'model'=>$model,
+			'model'=>$cri,
 		));
 	}
 
