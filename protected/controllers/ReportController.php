@@ -24,7 +24,11 @@ class ReportController extends Controller
 		);
 	}
         
-  
+	public function actionGraph()
+	{		
+		$this->render('_formGraph');
+	}
+
     public function actionDailyReport()
 	{		
 		$this->render('_reportDaily');
